@@ -118,8 +118,10 @@ def index():
 @app.route("/post/<int:pid>")
 def view_post(pid):
     db = get_db()
+    # Only published posts are viewable. Drafts (published = 0) are treated as
+    # not found, so an unpublished post can't be reached by guessing its id.
     post = db.execute(
-        "SELECT id, title, body FROM posts WHERE id = ?", (pid,)
+        "SELECT id, title, body FROM posts WHERE id = ? AND published = 1", (pid,)
     ).fetchone()
     if post is None:
         return "Post not found", 404
