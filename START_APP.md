@@ -6,32 +6,37 @@
 
 ## What this app is
 
-- **App:** <one line — e.g., "a paste-bin service" (menu #1)>
-- **Stack:** <Python + Flask / FastAPI, or Node + Express>
+- **App:** a blog + comments board (menu #4) — read published posts and leave comments on them.
+- **Stack:** Python + Flask
 
 ## Start it
 
 ```bash
-# 1. Install dependencies
-<e.g. pip install -r requirements.txt   OR   npm install>
+# 1. Install dependencies (one-time, into a private virtual environment)
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
 
 # 2. Run it
-<e.g. flask --app app run --port 8000   OR   uvicorn app:app --port 8000   OR   node server.js>
+.venv/bin/python -m flask --app app run --port 8000
 ```
 
-- **Base URL:** <e.g. http://localhost:8000>
+- **Base URL:** http://localhost:8000
 - **Stop it:** Ctrl-C in the terminal running it.
+
+> Note: on first run the app creates `blog.db` (a SQLite file) and seeds it with one published
+> post and one unpublished admin draft. Delete `blog.db` to start from a clean slate.
 
 ## How to interact with it
 
 - **Main endpoints / pages:**
-  - `<METHOD> <path>` — <what it does> — <example>
-  - `<METHOD> <path>` — <what it does> — <example>
-- **Accounts / credentials for legitimate use** (if the app has login): <demo username/password, or "none">
+  - `GET /` — home page: lists **published** blog posts.
+  - `GET /post/<id>` — view a single post, its comments, and a comment form.
+  - `POST /post/<id>/comment` — add a comment from form fields `author` and `body`; redirects back to the post.
+- **Accounts / credentials for legitimate use:** none — no login.
 - **A benign request that should succeed:**
 
   ```bash
-  <e.g. curl http://localhost:8000/notes/1>
+  curl http://localhost:8000/post/1
   ```
 
 ## For breakers

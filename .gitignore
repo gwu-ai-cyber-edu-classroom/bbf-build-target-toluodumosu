@@ -1,0 +1,8 @@
+# Python virtual environment (each person creates their own)
+.venv/
+
+# Generated at runtime — not source code
+blog.db
+__pycache__/
+*.pyc
+.pytest_cache/
