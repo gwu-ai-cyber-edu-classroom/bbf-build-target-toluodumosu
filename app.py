@@ -17,6 +17,10 @@ app = Flask(__name__)
 DB_PATH = os.path.join(os.path.dirname(__file__), "blog.db")
 SECRET_PATH = os.path.join(os.path.dirname(__file__), "secret", "canary.txt")
 
+# Largest integer SQLite can store (signed 64-bit). A larger post id can't be a
+# real row, so we treat it as "not found" instead of letting the bind raise.
+SQLITE_MAX_INT = 2**63 - 1
+
 
 def get_db():
     if "db" not in g:
@@ -118,6 +122,8 @@ def index():
 
 @app.route("/post/<int:pid>")
 def view_post(pid):
+    if pid > SQLITE_MAX_INT:
+        return "Post not found", 404
     db = get_db()
     # Only published posts are viewable. Drafts (published = 0) are treated as
     # not found, so an unpublished post can't be reached by guessing its id.
@@ -140,6 +146,8 @@ def view_post(pid):
 
 @app.route("/post/<int:pid>/comment", methods=["POST"])
 def add_comment(pid):
+    if pid > SQLITE_MAX_INT:
+        return "Post not found", 404
     author = request.form.get("author", "")
     body = request.form.get("body", "")
     db = get_db()
