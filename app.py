@@ -6,6 +6,7 @@ the home page because it's still a draft.
 
 Run:  flask --app app run --port 8000
 """
+import html
 import os
 import sqlite3
 
@@ -128,8 +129,11 @@ def view_post(pid):
     rows = db.execute(
         "SELECT author, body FROM comments WHERE post_id = ? ORDER BY id", (pid,)
     ).fetchall()
+    # Escape user-supplied comment text so markup is shown as plain text, not run
+    # as HTML/JS in visitors' browsers (prevents stored XSS).
     comments = "\n".join(
-        f'<div><b>{r["author"]}</b> wrote: {r["body"]}</div>' for r in rows
+        f'<div><b>{html.escape(r["author"])}</b> wrote: {html.escape(r["body"])}</div>'
+        for r in rows
     ) or "<p>No comments yet.</p>"
     return POST.format(title=post["title"], body=post["body"], comments=comments, pid=pid)
 
